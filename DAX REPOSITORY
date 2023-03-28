@@ -1,0 +1,38 @@
+## DAX REPOSITORY
+
+Calculated Column - DAX Formula for the Geography table
+	
+	zipCountry=Geography[Zip]&","&Geography[Country]
+
+
+'Calculated Column  - DAX Formula for the Sales table
+
+	zipCountry=Sales[Zip]&","&Sales[Country]
+
+
+
+'Table - DAX Formula for the Calendar table
+
+	Date=CALENDARAUTO()
+
+
+
+
+'Measure -DAX Formula for Total 
+
+	Total=Sum(Sales[Revenue])
+
+
+
+
+'PY Total - DAX Formula using Calculate
+
+	PY Sales = Calculate([Total],SamePeriodLastYear('Date'[Date])
+
+
+
+'% Growth
+
+	% Growth = Divide(([Total]-[PY Sales]),[PY Sales])
+  
+  
