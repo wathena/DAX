@@ -14,17 +14,31 @@ Calculated Column - DAX Formula for the Geography table
 'Table - DAX Formula for the Calendar table
 
 	Date= CALENDARAUTO()
-	Date= CALENDARAUTO(min(sales[dates], max(sales[dates])
+	Date= CALENDAR(min(sales[dates], max(sales[dates])
 	DayNumber = DAY('Date'[Date])
 	Age = TODAY() - 'Date'[Date] / 365   # We can further group in bins for age range
-
 
 
 
 'Measure -DAX Formula for Total 
 
 	Total=Sum(Sales[Revenue])
-	Total= SUMX(Sales, RELATED('Product'[MSRP]-Sales[Revenue])
+	Total= SUMX(Sales, RELATED('Product'[MSRP]-'Sales'[Revenue])
+	
+	Sales[Sum of SalesAmount] := SUMX ( Sales, Sales[Quantity] * Sales[Unit Price] )
+	
+	Sales[Gross Margin %] :=
+DIVIDE (
+    SUMX ( Sales, Sales[Quantity] * Sales[Unit Price] )
+        - SUMX ( Sales, Sales[Quantity] * Sales[Unit Cost] ),
+    SUMX ( Sales, Sales[Quantity] * Sales[Unit Price] )
+)
+
+Sales[Gross Margin %] :=
+VAR SalesAmount = SUMX ( Sales, Sales[Quantity] * Sales[Unit Price] )
+VAR TotalProductCost = SUMX ( Sales, Sales[Quantity] * Sales[Unit Cost] )
+VAR GrossMargin = SalesAmount - TotalProductCost
+RETURN DIVIDE ( GrossMargin, SalesAmount )
 	
 	
 	MSRP TABLE = SUMMARIZE('Product', 'Product'[Category], "Total MSRP", SUM('Product'[MSRP]))
@@ -39,6 +53,7 @@ Calculated Column - DAX Formula for the Geography table
 'PY Total - DAX Formula using Calculate
 
 	PY Sales = Calculate([Total],SamePeriodLastYear('Date'[Date])
+	Sales[Gross Margin %] := DIVIDE ( SUM ( Sales[GrossMargin] ),  SUM (Sales[SalesAmount] ) )
 	
 	# BLACK = Expression is a formula or measure name
 	# '' Means that this is a function (from another table)
@@ -50,5 +65,16 @@ Calculated Column - DAX Formula for the Geography table
 '% Growth
 
 	% Growth = Divide(([Total]-[PY Sales]),[PY Sales])
+	Price Range = IF('Product'[MSRP]< 1000), "LOW", IF('Product[MSRP] <2000, "MED", "HIGH"))
+	
+	
+# DAX Conventions
+Use [measure] and never use table[measure]
+Use table[column] and never use [column]
+Space before ‘(‘ and ‘)’ and any operand and operator
+Space before an in-line argument
+Definitions in the first row, including the assignment
+Use ‘=’ to define calculated columns / tables
+Use ‘:=’ to define measures
   
   
