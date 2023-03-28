@@ -13,7 +13,10 @@ Calculated Column - DAX Formula for the Geography table
 
 'Table - DAX Formula for the Calendar table
 
-	Date=CALENDARAUTO()
+	Date= CALENDARAUTO()
+	Date= CALENDARAUTO(min(sales[dates], max(sales[dates])
+	DayNumber = DAY('Date'[Date])
+	Age = TODAY() - 'Date'[Date] / 365   # We can further group in bins for age range
 
 
 
@@ -21,6 +24,14 @@ Calculated Column - DAX Formula for the Geography table
 'Measure -DAX Formula for Total 
 
 	Total=Sum(Sales[Revenue])
+	Total= SUMX(Sales, RELATED('Product'[MSRP]-Sales[Revenue])
+	
+	
+	MSRP TABLE = SUMMARIZE('Product', 'Product'[Category], "Total MSRP", SUM('Product'[MSRP]))
+	# Create a summary table by Category 
+	
+	
+	MSRP = Related('Product'[MSRP])-> # Brings in related column into table as measure
 
 
 
@@ -28,6 +39,11 @@ Calculated Column - DAX Formula for the Geography table
 'PY Total - DAX Formula using Calculate
 
 	PY Sales = Calculate([Total],SamePeriodLastYear('Date'[Date])
+	
+	# BLACK = Expression is a formula or measure name
+	# '' Means that this is a function (from another table)
+	# PURPLE = Means it is a measure
+	# "" Means that this is a name
 
 
 
